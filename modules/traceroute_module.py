@@ -1,6 +1,5 @@
 #Manejo y ejecución de traceroute/tracert
 
-
 def ejecutar_traceroute(destino, so):
     import subprocess
     import re
