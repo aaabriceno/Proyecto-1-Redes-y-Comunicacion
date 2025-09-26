@@ -181,6 +181,6 @@ Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 
 ## 👨‍💻 Autor
 
-**Anthony Briceño**  
-Proyecto universitario - Redes y Comunicación  
+**Anthony Briceño Quiroz**  
+Mini Proyecto U niversitario - Redes y Comunicación  
 Septiembre 2025

@@ -1,9 +1,14 @@
+'''
+Programa principal que se encarga de coordinar 
+las diferentes funcionalidades del proyecto.
+'''
+
 import platform
 import json
 import random
-from traceroute_module import ejecutar_traceroute
-from geolocation_module import obtener_coordenadas
-from map_module import generar_mapa
+from modules.traceroute_module import ejecutar_traceroute
+from modules.geolocation_module import obtener_coordenadas
+from modules.map_module import generar_mapa
 
 def cargar_ips(nombre_archivo="paises_ips.json"):
     try:
