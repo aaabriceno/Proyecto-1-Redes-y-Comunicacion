@@ -28,16 +28,17 @@ Este proyecto tiene el objetivo de poder mostrar que caminos toma una conexión 
 
 ### 4. **Base de Datos de IPs Sudamericanas**
 Incluye IPs públicas representativas de:
-- 🇵🇪 Perú (Telefónica Perú)
-- 🇵🇾 Paraguay (COPACO Paraguay)
-- 🇨🇴 Colombia (ETB Colombia)  
-- 🇦🇷 Argentina (Telecom Argentina)
-- 🇧🇷 Brasil (Brasil Telecom)
-- 🇨🇱 Chile (Entel Chile)
-- 🇪🇨 Ecuador (CNT Ecuador)
-- 🇻🇪 Venezuela (CANTV Venezuela)
-- 🇧🇴 Bolivia (AXS Bolivia)
-- 🇺🇾 Uruguay (Antel Uruguay)
+- 🇵🇪 Perú 
+- 🇵🇾 Paraguay
+- 🇨🇴 Colombia
+- 🇦🇷 Argentina
+- 🇧🇷 Brasil
+- 🇨🇱 Chile
+- 🇪🇨 Ecuador
+- 🇻🇪 Venezuela
+- 🇧🇴 Bolivia
+- 🇺🇾 Uruguay
+- PA Panama 
 
 ## 📋 Requisitos
 
@@ -97,9 +98,9 @@ El programa ofrece un menú interactivo con las siguientes opciones:
 
 🌎 PAÍSES SUDAMERICANOS DISPONIBLES:
 ----------------------------------------
- 1. Peru         (2 IPs)
- 2. Paraguay     (2 IPs) 
- 3. Colombia     (2 IPs)
+ 1. Peru         (10 IPs)
+ 2. Paraguay     (10 IPs) 
+ 3. Colombia     (10 IPs)
  ...
 
 ➤ Selecciona un país de destino: Paraguay
