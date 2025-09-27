@@ -25,32 +25,49 @@ def cargar_ips(nombre_archivo="paises_ips.json"):
 
 def main():
     print("MiniProyecto de Redes y Comunicaciones")
-    destino = input("Ingresa la IP Publica o dominio de destino")
+    #pais = input("Ingresa la IP Publica o dominio de pais")
     
     #Cargar dataset de IPs de paises
     IPS_PAISES = cargar_ips()
     if not IPS_PAISES:
         return
 
-    print("Países disponibles:", ", ".join(IPS_PAISES.keys()))
-    destino = input("Elige un país destino: ")
+    #Detectamos el SO
+    so = platform.system()
+    print(f"Detectando Sistema Operativo:{so}")
 
-    if destino not in IPS_PAISES:
+    #Elejimos el pais destino
+    print("Países disponibles:", ", ".join(IPS_PAISES.keys()))
+    pais = input("Elige un país pais: ")
+
+    #Comprobamos si el pais existe en el dataset paises_ips.json
+    if pais not in IPS_PAISES:
         print("País no disponible en el dataset.")
         return
     
+    #Muestra las IPs disponibles y selecciona una IP de las 10 disponibles
+    print(f"IPS disponibles en {pais}:")
+    for i, ip in enumerate(IPS_PAISES[pais], start=1):
+        print(f"{i}. {ip}")
     
-    #Detectamos el SO
-    so = platform.system()
-    print("Detectando Sistema Operativo:{so}")
+    try:
+        opcion = int(input("Elige el número de la IP (1-10): "))
+        if opcion < 1 or opcion > len(IPS_PAISES[pais]):
+            print("Opción fuera de rango.")
+            return
+    except ValueError:
+        print("Debes ingresar un número válido.")
+        return
     
+    ip_destino = IPS_PAISES[pais][opcion - 1]
+    print(f"IP destino seleccionada: {ip_destino}")
+        
     #1.- Ejecutar traceroute/tracert
-    print("Ejecutando traceroute hacia:{destino}")
-    ips = ejecutar_traceroute(destino,so)
+    print(f"Ejecutando traceroute hacia:{ip_destino} ({pais})")
+    ips = ejecutar_traceroute(ip_destino,so)
     print ("IPs encontradas en el camino:")
     for ip in ips:
         print(" -", ip)
-    
     
     #2.- Obtener coordenas de las IPs
     coordenadas = []
@@ -61,7 +78,8 @@ def main():
     
     #3.- Generar mapa
     if coordenadas:
-        generar_mapa(coordenadas, "ruta traceroute.html")
+        nombre_archivo = f"ruta_{pais}_{ip_destino.replace('.', '_')}.html"
+        generar_mapa(coordenadas, nombre_archivo)
         print("Mapa generado")
     else:
         print("Mapa no generado")
