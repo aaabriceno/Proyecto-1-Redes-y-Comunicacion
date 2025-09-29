@@ -1,27 +1,44 @@
 #Manejo y ejecución de traceroute/tracert
+#Funciona en windows y en linux
+#Devuelve una lista de IPs sin duplicados
 
-def ejecutar_traceroute(destino, so):
-    import subprocess
-    import re
+import subprocess
+import re
+import shutil
 
+_IP_REGEX = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
+
+#Esta funcion verifica si un comando existe en el PATH
+def existe(cmd:str) -> bool:
+    return shutil.which(cmd) is not None
+
+def ejecutar_traceroute(destino:str, so:str,saltos_maximos:int = 30, tiempo_de_espera: int = 60):
     #verficar el sistema operativo, para poder usar 
     #la herramienta correspondiente para el SO
-    comando = []
+    #comando = []
     if so == "Windows":
-        comando = ["tracert", "-d", destino]
+        if not existe("tracert"):
+            print("No se encontro 'tracert' en el PATH")   
+            return []
+        comando = ["tracert", "-d","-h",str(saltos_maximos), destino]
     else:
-        comando = ["traceroute", "-n", destino]
+        if not existe("traceroute"):
+                print("No se encontro 'traceroute' en el PATH")
+                return []
+        comando = ["traceroute", "-n","-I","-m",str(saltos_maximos), destino]
 
     try:
-        resultado = subprocess.run(comando, capture_output=True, text=True, check=True)
-        salida = resultado.stdout
-        # Expresión regular para extraer las IPs
-        patron_ip = re.compile(r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b")
-        ips = patron_ip.findall(salida)
-        # Eliminar duplicados manteniendo el orden
-        ips_unicas = list(dict.fromkeys(ips))
-        return ips_unicas
-    except subprocess.CalledProcessError as e:
-        print(f"Error al ejecutar el comando: {e}")
+        resultado = subprocess.run(comando, capturar_salida = True, texto = True,
+                    espera = tiempo_de_espera, check=True)
+        salida = resultado.stdout or resultado.stderr or ""  
+    except subprocess.TimeoutExpired:
+        print("Traceroute supero el tiempo de espera")
         return []
-    
+    ips = _IP_REGEX.findall(salida)
+    #Quitamos duplicados conservando el orden
+    seen, saltos = set(), []
+    for ip in ips:
+        if ip not in seen:
+            seen.add(ip)
+            saltos.append(ip)
+    return saltos
