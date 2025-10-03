@@ -28,10 +28,25 @@ def ejecutar_traceroute(destino:str, so:str,saltos_maximos:int = 30, tiempo_de_e
         comando = ["traceroute", "-n","-I","-m",str(saltos_maximos), destino]
 
     try:
-        resultado = subprocess.run(comando, capturar_salida = True, texto = True,
-                    espera = tiempo_de_espera, check=True)
+        resultado = subprocess.run(comando, capture_output=True, text=True,
+                    timeout=tiempo_de_espera, check=True)
         salida = resultado.stdout or resultado.stderr or ""  
     except subprocess.TimeoutExpired:
         print("Traceroute supero el tiempo de espera")
         return []
+    except subprocess.CalledProcessError as e:
+        print(f"Error ejecutando traceroute: {e}")
+        return []
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        return []
+    
+    ips = _IP_REGEX.findall(salida)
+    # Quitar duplicados conservando el orden
+    seen, saltos = set(), []
+    for ip in ips:
+        if ip not in seen:
+            seen.add(ip)
+            saltos.append(ip)
+    return saltos
     
