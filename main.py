@@ -71,9 +71,9 @@ def main():
     #2.- Obtener coordenas de las IPs
     coordenadas = []
     for ip in ips:
-        coordenada = obtener_coordenadas(ip)
-        if coordenada:
-            coordenadas.append(coordenada)
+        dato = obtener_coordenadas(ip)
+        if dato:
+            coordenadas.append(dato) #Se agrega lat, long , info_dict de la IP
     
     #3.- Generar mapa
     if coordenadas:
