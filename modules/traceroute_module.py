@@ -24,4 +24,3 @@ def ejecutar_traceroute(destino, so):
     except subprocess.CalledProcessError as e:
         print(f"Error al ejecutar el comando: {e}")
         return []
-    

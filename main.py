@@ -2,7 +2,6 @@
 Programa principal que se encarga de coordinar 
 las diferentes funcionalidades del proyecto.
 '''
-
 import platform
 import json
 import random
