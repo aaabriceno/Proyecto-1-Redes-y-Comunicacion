@@ -12,7 +12,7 @@ _IP_REGEX = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
 def existe(cmd:str) -> bool:
     return shutil.which(cmd) is not None
 
-def ejecutar_traceroute(destino:str, so:str,saltos_maximos:int = 30, tiempo_de_espera: int = 60):
+def ejecutar_traceroute(destino:str, so:str,saltos_maximos:int = 40, tiempo_de_espera: int =120):
     #verficar el sistema operativo, para poder usar 
     #la herramienta correspondiente para el SO
     #comando = []
