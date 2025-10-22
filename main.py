@@ -6,7 +6,7 @@ import platform
 import json
 import random
 from modules.traceroute_module import ejecutar_traceroute
-from modules.geolocation_module import obtener_coordenadas
+from modules.geolocation_module import obtenerCoordenadas
 from modules.map_module import generar_mapa
 
 def cargar_ips(nombre_archivo="paises_ips.json"):
@@ -71,7 +71,7 @@ def main():
     #2.- Obtener coordenas de las IPs
     coordenadas = []
     for ip in ips:
-        dato = obtener_coordenadas(ip)
+        dato = obtenerCoordenadas(ip)
         if dato:
             coordenadas.append(dato) #Se agrega lat, long , info_dict de la IP
     
