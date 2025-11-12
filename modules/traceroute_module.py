@@ -35,18 +35,30 @@ def ejecutar_traceroute(destino:str, so:str,saltos_maximos:int = 40, tiempo_de_e
         print("Traceroute supero el tiempo de espera")
         return []
     except subprocess.CalledProcessError as e:
-        print(f"Error ejecutando traceroute: {e}")
+        print("--- ERROR: TRACEROUTE FALLÓ ---")
+        print(f"El comando devolvió un error. Código de salida: {e.returncode}")
+        print("Salida del comando (stdout):")
+        print(e.stdout)
+        print("Salida de error (stderr):")
+        print(e.stderr)
+        print("---------------------------------")
         return []
     except Exception as e:
         print(f"Error inesperado: {e}")
         return []
     
-    ips = _IP_REGEX.findall(salida)
+    ips_encontradas = []
+    # Procesar línea por línea para mantener el orden y filtrar encabezados
+    for linea in salida.splitlines():
+        # Buscar la IP en las líneas que reportan los saltos
+        match = _IP_REGEX.search(linea)
+        if match and "Traza a la dirección" not in linea and "Traza completa" not in linea:
+            ips_encontradas.append(match.group(0))
+
     # Quitar duplicados conservando el orden
     seen, saltos = set(), []
-    for ip in ips:
+    for ip in ips_encontradas:
         if ip not in seen:
             seen.add(ip)
             saltos.append(ip)
     return saltos
-    

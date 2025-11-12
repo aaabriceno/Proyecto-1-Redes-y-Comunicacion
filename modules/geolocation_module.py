@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, Tuple, Optional
 import requests
 
-CACHE_FILE = Path("/resultados/cache_IPgeo.json")
+CACHE_FILE = Path("resultados/cache_IPgeo.json")
 api_url = "http://ip-api.com/json/{ip}?fields=status,country,regionName,city,lat,lon,isp,query,message"
 
 def cargarCache() -> Dict:
@@ -23,32 +23,30 @@ def guardarCache(cache: Dict) -> None:
 def esIPpublicaIPv4(IP:str) -> bool:
     try:
         ip = ipaddress.ip_address(IP)
-        #ignoramos IPs privadas/loopback/reservadas/etc
-        return ip.version == 4 and not (ip.is_private or 
-                                        ip.is_reserved or 
-                                        ip.is_loopback or 
-                                        ip.is_multicast or
-                                        ip.is_link_local)
+        # Ignoramos IPs privadas, de loopback, reservadas, etc.
+        # Tu profesor mencionó las 10.x.x.x y 127.x.x.x (loopback)
+        # ip.is_private cubre: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+        return ip.version == 4 and ip.is_global
     except ValueError:
         return False   
     
-def obtenerCoordenadas(ip:str) -> Optional[Tuple[float, float]]:
+def obtenerCoordenadas(ip:str) -> Optional[Tuple[float, float, dict]]:
     if not esIPpublicaIPv4(ip):
-        return None
+        return None, None, None
 
     cache = cargarCache()
     if ip in cache and "lat" in cache[ip] and "lon" in cache[ip]:
         d = cache[ip]
-        return d["lat"], d["lon"], d
+        return d.get("lat"), d.get("lon"), d
 
     try:
         r = requests.get(api_url.format(ip=ip), timeout=8)
         data = r.json()
     except Exception:
-        return None
+        return None, None, None
 
     if data.get("status") != "success":
-        return None
+        return None, None, None
 
     info = {
         "ip": data.get("query"),
@@ -62,4 +60,4 @@ def obtenerCoordenadas(ip:str) -> Optional[Tuple[float, float]]:
     cache[ip] = info
     guardarCache(cache)
 
-    return info["lat"], info["lon"], info
+    return info.get("lat"), info.get("lon"), info
