@@ -1,0 +1,5 @@
+# Carpetas con datos reales generados
+resultados/
+*.html
+*.log
+*.json
