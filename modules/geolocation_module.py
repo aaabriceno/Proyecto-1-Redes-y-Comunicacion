@@ -4,9 +4,11 @@ import ipaddress
 from pathlib import Path
 from typing import Dict, Tuple, Optional
 import requests
+import time
 
 CACHE_FILE = Path("resultados/cache_IPgeo.json")
-api_url = "http://ip-api.com/json/{ip}?fields=status,country,regionName,city,lat,lon,isp,query,message"
+api_url = ("http://ip-api.com/json/{ip}?"
+           "fields=status,country,regionName,city,lat,lon,isp,as,asname,query,message")
 
 def cargarCache() -> Dict:
     if CACHE_FILE.exists():
@@ -39,10 +41,20 @@ def obtenerCoordenadas(ip:str) -> Optional[Tuple[float, float, dict]]:
         d = cache[ip]
         return d.get("lat"), d.get("lon"), d
 
-    try:
-        r = requests.get(api_url.format(ip=ip), timeout=8)
-        data = r.json()
-    except Exception:
+    data = {}
+    for intento in range(3):
+        try:
+            r = requests.get(api_url.format(ip=ip), timeout=8)
+            data = r.json()
+            # Manejo de rate limit de ip-api
+            if data.get("message") == "limit reached":
+                time.sleep(60)
+                continue
+            break
+        except Exception:
+            time.sleep(1)
+            continue
+    else:
         return None, None, None
 
     if data.get("status") != "success":
@@ -54,6 +66,8 @@ def obtenerCoordenadas(ip:str) -> Optional[Tuple[float, float, dict]]:
         "region": data.get("regionName"),
         "city": data.get("city"),
         "isp": data.get("isp"),
+        "as": data.get("as"),
+        "asname": data.get("asname"),
         "lat": data.get("lat"),
         "lon": data.get("lon"),
     }

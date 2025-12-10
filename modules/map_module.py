@@ -9,14 +9,24 @@ from folium.plugins import AntPath, MarkerCluster
 
 def ventana_html(idx:int, meta:Dict) -> str:
     ip = meta.get("ip","N/A")
-    ciudad = meta.get("ciudad") or "-"
+    ciudad = meta.get("city") or "-"
     region = meta.get("region") or "-"
-    pais = meta.get("pais") or "-"
+    pais = meta.get("country") or "-"
     isp = meta.get("isp") or "-"
+    asn = meta.get("as") or "-"
+    asname = meta.get("asname") or "-"
+    rtt = meta.get("rtt_ms")
+    rtt_txt = f"{rtt} ms" if rtt is not None else "-"
+    lat = meta.get("lat")
+    lon = meta.get("lon")
+    coord_txt = f"{lat}, {lon}" if lat is not None and lon is not None else "-"
     return (f"<b>Hop {idx}</b><br>"
             f"<b>IP:</b> {ip}<br>"
             f"<b>Ubicación:</b> {ciudad}, {region}, {pais}<br>"
-            f"<b>ISP:</b> {isp}")
+            f"<b>ISP:</b> {isp}<br>"
+            f"<b>ASN:</b> {asn} ({asname})<br>"
+            f"<b>RTT:</b> {rtt_txt}<br>"
+            f"<b>Coord:</b> {coord_txt}")
     
 def crear_tabla_resumen_html(coordenadas_con_nulos: List[Optional[Tuple[float,float,Dict]]]) -> str:
     header = """
@@ -133,5 +143,4 @@ def generar_mapa (coordenadas_con_nulos: List[Optional[Tuple[float,float,Dict]]]
 
     out_dir = Path("resultados/mapas")
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / nombre_archivo).write_text(n._repr_html_(), encoding="utf-8")
-    # alternativo (más “limpio”): m.save(str(out_dir / nombre_archivo))
+    n.save(str(out_dir / nombre_archivo))
